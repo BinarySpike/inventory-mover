@@ -104,9 +104,6 @@ script.on_event('transfer-to-destination', function(event)
     local dInv, dMsg = find_inventory(destination)
     local sInv, sMsg = find_inventory(source)
 
-    player.print(dMsg.." "..game.tick)
-    player.print(sMsg.." "..game.tick + 1)
-
     if dInv == nil or not dInv.valid then
         dflying_text(player, "Destination inventory not supported or invalid", event.cursor_position)
         return
