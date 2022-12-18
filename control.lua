@@ -53,7 +53,9 @@ script.on_event('transfer-to-destination', function(event)
     local player = game.get_player(event.player_index)
     local destination = player.selected
     local source = global.selected_object
-    
+    local cursorStack = nil
+
+    if player.cursor_stack ~= nil and player.cursor_stack.valid_for_read then cursorStack = player.cursor_stack end
     
     -- valid objects?
 
@@ -126,13 +128,20 @@ script.on_event('transfer-to-destination', function(event)
     for i = 1, #sInv do
         local stack = sInv[i]
         if stack.valid_for_read then
+            if cursorStack ~= nil and cursorStack.name ~= stack.name then goto continue end
             if dInv.can_insert(stack) then
                 didInsert = true
                 local count = dInv.insert(stack)
-                if count < stack.count then stack.count = stack.count - count end
-                if count == stack.count then stack.clear() end
+                stack.count = stack.count - count
+                if sInv == dInv then dInv.sort_and_merge() end
             end
         end
+        ::continue::
+    end
+
+    if cursorStack ~= nil and dInv.can_insert(cursorStack) then
+        local count = dInv.insert(cursorStack)
+        cursorStack.count = cursorStack.count - count
     end
 
     if not didInsert then
