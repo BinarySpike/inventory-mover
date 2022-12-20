@@ -4,6 +4,7 @@ Quickly move items between inventory entities, chests, trains, etc.
 Cutting your player's inventory out of the process.
 ## Default Key Bindings:
 Hover over source and destination and press:
+
 **Select source inventory:** <kbd>⌃ Control</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Right-click</kbd>
 **Send to destination:** <kbd>⌃ Control</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Left-click</kbd>
 
