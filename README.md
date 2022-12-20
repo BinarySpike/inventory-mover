@@ -6,6 +6,7 @@ Cutting your player's inventory out of the process.
 Hover over source and destination and press:
 
 **Select source inventory:** <kbd>⌃ Control</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Right-click</kbd>
+
 **Send to destination:** <kbd>⌃ Control</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Left-click</kbd>
 
 ## Filtering
