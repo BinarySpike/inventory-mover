@@ -1,0 +1,8 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.1.3
+Date: 2023-01-22
+  Bugfixes:
+    - Made selection source per-player fixing possible multiplayer race condition.
+    - Fixed "Destination full" error alert when moving filtered items
+  Features:
+    - Added source indicator so you can visually see where you are pulling from
