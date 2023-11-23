@@ -45,14 +45,143 @@ script.on_event('select-transfer-source', function(event)
     
     if not selected then return end
 
-    global.selected_object = player.selected
-    player.surface.play_sound{path='utility/cut_activated'}
+    checkGlobal(event.player_index)
+
+    -- if global.selected_object[event.player_index].entity == selected then
+    --   global.selected_object[event.player_index].entity = nil
+    -- else
+    --   global.selected_object[event.player_index].entity = player.selected
+    -- end
+
+    global.selected_object[event.player_index].entity = player.selected
+    player.play_sound{path='utility/cut_activated'}
+    updateSelectedObjectDraw(event.player_index)
+    
 end)
+
+function checkGlobal(playerIndex)
+  if not global.selected_object then global.selected_object = {} end
+  if global.selected_object.active ~= nil then global.selected_object = {} end
+
+  if global.selected_object[playerIndex] == nil then global.selected_object[playerIndex] = {} end
+end
+
+function updateSelectedObjectDraw(playerIndex)
+  --if global.selected_object_draw_id then rendering.destroy(global.selected_object_draw_id) end
+  rendering.clear('inventory-mover')
+
+  checkGlobal(playerIndex)
+
+  local selected = global.selected_object[playerIndex].entity
+
+  if selected == nil then return end
+
+  -- TOP LEFT
+
+  global.selected_object[playerIndex].draw_id1 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={-selected.tile_width/2 - 0.00, -selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={-selected.tile_width/2 - 0.00, -selected.tile_height/2 - 0.35},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  global.selected_object[playerIndex].draw_id2 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={-selected.tile_width/2 - 0.00, -selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={-selected.tile_width/2 - 0.35, -selected.tile_height/2 - 0.00},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  -- TOP RIGHT
+
+  global.selected_object[playerIndex].draw_id3 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={selected.tile_width/2 - 0.00, -selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={selected.tile_width/2 + 0.00, -selected.tile_height/2 - 0.35},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  global.selected_object[playerIndex].draw_id4 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={selected.tile_width/2 - 0.00, -selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={selected.tile_width/2 + 0.35, -selected.tile_height/2 - 0.00},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  -- BOTTOM RIGHT
+
+  global.selected_object[playerIndex].draw_id3 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={selected.tile_width/2 - 0.00, selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={selected.tile_width/2 + 0.35, selected.tile_height/2 + 0.00},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  global.selected_object[playerIndex].draw_id4 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={selected.tile_width/2 - 0.00, selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={selected.tile_width/2 + 0.00, selected.tile_height/2 + 0.35},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  -- BOTTOM LEFT
+
+  global.selected_object[playerIndex].draw_id3 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={-selected.tile_width/2 - 0.00, selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={-selected.tile_width/2 + 0.00, selected.tile_height/2 + 0.35},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  global.selected_object[playerIndex].draw_id4 = rendering.draw_line{
+    color={0,0.35,1,0.9}, width=4,
+    from=selected,
+    from_offset={-selected.tile_width/2 - 0.00, selected.tile_height/2 - 0.00},
+    to=selected,
+    to_offset={-selected.tile_width/2 - 0.35, selected.tile_height/2 + 0.00},
+    surface=selected.surface,
+    players={player},
+    only_in_alt_mode=true
+  }
+
+  --global.selected_object[]
+end
 
 script.on_event('transfer-to-destination', function(event)
     local player = game.get_player(event.player_index)
     local destination = player.selected
-    local source = global.selected_object
+
+    if not global.selected_object then global.selected_object = {} end
+
+    local source = global.selected_object[event.player_index].entity
     local cursorStack = nil
 
     if player.cursor_stack ~= nil and player.cursor_stack.valid_for_read then cursorStack = player.cursor_stack end
@@ -140,6 +269,7 @@ script.on_event('transfer-to-destination', function(event)
     end
 
     if cursorStack ~= nil and dInv.can_insert(cursorStack) then
+        didInsert = true
         local count = dInv.insert(cursorStack)
         cursorStack.count = cursorStack.count - count
     end
@@ -147,15 +277,18 @@ script.on_event('transfer-to-destination', function(event)
     if not didInsert then
         eflying_text(player, "Destination is full", destination.position)
     else -- inserted
-        destination.surface.play_sound{path='utility/inventory_move'}
+        player.play_sound{path='utility/inventory_move'}
     end
+
+    checkGlobal(event.player_index)
 
     -- we didn't insert everything, let's keep our source
     -- -or- (else)
     -- we inserted everything, let's move our source to the destination
     if sInv.get_item_count() > 0 then
-        global.selected_object = source
+        global.selected_object[event.player_index].entity = source
     else
-        global.selected_object = destination
+        global.selected_object[event.player_index].entity = destination
+        updateSelectedObjectDraw(event.player_index)
     end
 end)
