@@ -1,10 +1,10 @@
 function find_inventory(luacontrol)
     local supported_inventories = {
-        defines.inventory.car_trunk -- look for this prior to chest.  chest seems the fuel inventory for cars
-       ,defines.inventory.chest
-       ,defines.inventory.character_main
-       ,defines.inventory.cargo_wagon
-       ,defines.inventory.spider_trunk
+      defines.inventory.car_trunk -- look for this prior to chest.  chest seems the fuel inventory for cars
+      ,defines.inventory.chest
+      ,defines.inventory.character_main
+      ,defines.inventory.cargo_wagon
+      ,defines.inventory.spider_trunk
     }
     local output = nil
     
