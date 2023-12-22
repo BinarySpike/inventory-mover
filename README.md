@@ -1,4 +1,4 @@
-# Inventory Mover 0.1.3
+# Inventory Mover
 A mod for the game Factorio.
 Quickly move items between inventory entities, chests, trains, etc.
 Cutting your player's inventory out of the process.

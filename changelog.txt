@@ -6,3 +6,8 @@ Date: 2023-01-22
     - Fixed "Destination full" error alert when moving filtered items
   Features:
     - Added source indicator so you can visually see where you are pulling from
+---------------------------------------------------------------------------------------------------
+Version: 0.1.4
+Date: 2023-12-22
+  Bugfixes:
+    - Fixed crash when source LuaEntity is invalid in 0.1.2 and you upgrade to 0.1.3
