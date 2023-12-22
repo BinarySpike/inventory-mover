@@ -61,6 +61,7 @@ end)
 
 function checkGlobal(playerIndex)
   if not global.selected_object then global.selected_object = {} end
+  if global.selected_object.valid ~= nil then global.selected_object = {} end
   if global.selected_object.active ~= nil then global.selected_object = {} end
 
   if global.selected_object[playerIndex] == nil then global.selected_object[playerIndex] = {} end
@@ -179,7 +180,7 @@ script.on_event('transfer-to-destination', function(event)
     local player = game.get_player(event.player_index)
     local destination = player.selected
 
-    if not global.selected_object then global.selected_object = {} end
+    checkGlobal(event.player_index)
 
     local source = global.selected_object[event.player_index].entity
     local cursorStack = nil
