@@ -11,3 +11,8 @@ Version: 0.1.4
 Date: 2023-12-22
   Bugfixes:
     - Fixed crash when source LuaEntity is invalid in 0.1.2 and you upgrade to 0.1.3
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 2024-10-26
+  Changes:
+    - Updated for Factorio 2.0 and Space Age
