@@ -1,3 +1,31 @@
+function findLargestInventory(array)
+  local maxFirst = nil
+  local maxSecond = -math.huge -- Start with a very low number
+
+  for _, pair in ipairs(array) do
+    local first, second = pair[1], pair[2]
+    if second > maxSecond then
+      maxSecond = second
+      maxFirst = first
+    end
+  end
+
+  return maxFirst
+end
+
+function updated_find(luacontrol)
+  local maxIndex = luacontrol.get_max_inventory_index()
+
+  local foundInventories = {}
+
+  for i = 1, maxIndex do
+    local test = luacontrol.get_inventory(i)
+    if test ~= nil then table.insert(foundInventories, { test, #test }) end
+  end
+
+  return findLargestInventory(foundInventories)
+end
+
 function find_inventory(luacontrol)
   local supported_inventories = {
     defines.inventory.car_trunk -- look for this prior to chest.  chest seems the fuel inventory for cars
@@ -9,7 +37,8 @@ function find_inventory(luacontrol)
   local output = nil
 
   for key, value in pairs(supported_inventories) do
-    output = luacontrol.get_inventory(value)
+    output = luacontrol.get_main_inventory()
+    game.print(serpent.block(output))
     if output ~= nil then return output, "Found " .. key end
   end
   return nil
@@ -47,12 +76,6 @@ script.on_event('select-transfer-source', function(event)
 
   checkGlobal(event.player_index)
 
-  -- if global.selected_object[event.player_index].entity == selected then
-  --   global.selected_object[event.player_index].entity = nil
-  -- else
-  --   global.selected_object[event.player_index].entity = player.selected
-  -- end
-
   storage.selected_object[event.player_index].entity = player.selected
   player.play_sound { path = 'cut_activated' }
   updateSelectedObjectDraw(event.player_index)
@@ -66,8 +89,14 @@ function checkGlobal(playerIndex)
   if storage.selected_object[playerIndex] == nil then storage.selected_object[playerIndex] = {} end
 end
 
+function offsetVector(first, second)
+  local result = {}
+  result.x = first.x + second[1]
+  result.y = first.y + second[2]
+  return result
+end
+
 function updateSelectedObjectDraw(playerIndex)
-  --if global.selected_object_draw_id then rendering.destroy(global.selected_object_draw_id) end
   rendering.clear('inventory-mover')
 
   checkGlobal(playerIndex)
@@ -80,10 +109,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id1 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.35 },
+    from = offsetVector(selected.position, { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.35 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -91,10 +118,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id2 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { -selected.tile_width / 2 - 0.35, -selected.tile_height / 2 - 0.00 },
+    from = offsetVector(selected.position, { -selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { -selected.tile_width / 2 - 0.35, -selected.tile_height / 2 - 0.00 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -104,10 +129,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id3 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { selected.tile_width / 2 + 0.00, -selected.tile_height / 2 - 0.35 },
+    from = offsetVector(selected.position, { selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { selected.tile_width / 2 + 0.00, -selected.tile_height / 2 - 0.35 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -115,10 +138,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id4 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { selected.tile_width / 2 + 0.35, -selected.tile_height / 2 - 0.00 },
+    from = offsetVector(selected.position, { selected.tile_width / 2 - 0.00, -selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { selected.tile_width / 2 + 0.35, -selected.tile_height / 2 - 0.00 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -128,10 +149,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id3 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { selected.tile_width / 2 + 0.35, selected.tile_height / 2 + 0.00 },
+    from = offsetVector(selected.position, { selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { selected.tile_width / 2 + 0.35, selected.tile_height / 2 + 0.00 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -139,10 +158,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id4 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { selected.tile_width / 2 + 0.00, selected.tile_height / 2 + 0.35 },
+    from = offsetVector(selected.position, { selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { selected.tile_width / 2 + 0.00, selected.tile_height / 2 + 0.35 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -152,10 +169,8 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id3 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { -selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { -selected.tile_width / 2 + 0.00, selected.tile_height / 2 + 0.35 },
+    from = offsetVector(selected.position, { -selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { -selected.tile_width / 2 + 0.00, selected.tile_height / 2 + 0.35 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
@@ -163,16 +178,12 @@ function updateSelectedObjectDraw(playerIndex)
 
   storage.selected_object[playerIndex].draw_id4 = rendering.draw_line {
     color = { 0, 0.35, 1, 0.9 }, width = 4,
-    from = selected,
-    from_offset = { -selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 },
-    to = selected,
-    to_offset = { -selected.tile_width / 2 - 0.35, selected.tile_height / 2 + 0.00 },
+    from = offsetVector(selected.position, { -selected.tile_width / 2 - 0.00, selected.tile_height / 2 - 0.00 }),
+    to = offsetVector(selected.position, { -selected.tile_width / 2 - 0.35, selected.tile_height / 2 + 0.00 }),
     surface = selected.surface,
     players = { player },
     only_in_alt_mode = true
   }
-
-  --global.selected_object[]
 end
 
 script.on_event('transfer-to-destination', function(event)
@@ -244,8 +255,11 @@ script.on_event('transfer-to-destination', function(event)
 
 
 
-  local dInv, dMsg = find_inventory(destination)
-  local sInv, sMsg = find_inventory(source)
+  local dInv, dMsg = updated_find(destination)
+  local sInv, sMsg = updated_find(source)
+
+  --game.print(serpent.block(defines.inventory))
+  --dflying_text(player, sMsg, source.position)
 
   if dInv == nil or not dInv.valid then
     dflying_text(player, "Destination inventory not supported or invalid", event.cursor_position)

@@ -16,3 +16,10 @@ Version: 0.1.5
 Date: 2024-10-26
   Changes:
     - Updated for Factorio 2.0 and Space Age
+---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: 2024-10-26
+  Bugfixes:
+    - Fixed bug with source indicator not showing up (there was a change to how line drawing works in the Factorio mod api for v2)
+    - Fixed logistic chests bug in v2.0
+
