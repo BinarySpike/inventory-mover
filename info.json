@@ -1,11 +1,11 @@
 {
   "name": "inventory-mover",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "title": "Inventory Mover",
   "author": "BinarySpike",
   "dependencies": [
-    "base >= 2.0.0"
+    "base >= 2.1.0"
   ],
-  "factorio_version": "2.0",
+  "factorio_version": "2.1",
   "description": "Creates keybinds that let you move inventories between inventory entities, chests, trains, etc."
 }
