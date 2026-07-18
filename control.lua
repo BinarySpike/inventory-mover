@@ -101,6 +101,9 @@ function updateSelectedObjectDraw(playerIndex)
 
   checkGlobal(playerIndex)
 
+  local player = game.get_player(playerIndex)
+  if player == nil then return end
+
   local selected = storage.selected_object[playerIndex].entity
 
   if selected == nil then return end
